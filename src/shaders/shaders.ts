@@ -16,6 +16,8 @@ import clusteredDeferredFullscreenFragRaw from './clustered_deferred_fullscreen.
 import moveLightsComputeRaw from './move_lights.cs.wgsl?raw';
 import clusteringComputeRaw from './clustering.cs.wgsl?raw';
 
+import { canvasWidth, canvasHeight } from '../renderer'; 
+
 // CONSTANTS (for use in shaders)
 // =================================
 
@@ -30,7 +32,16 @@ export const constants = {
 
     moveLightsWorkgroupSize: 128,
 
-    lightRadius: 2
+    lightRadius: 2,
+
+    clusterWidth: 16,    
+    clusterHeight: 9,    
+    clusterDepth: 128,   
+    maxLightsPerCluster: 1024,
+
+    get canvasWidth() { return canvasWidth; },
+    get canvasHeight() { return canvasHeight; }
+
 };
 
 // =================================

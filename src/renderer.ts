@@ -15,6 +15,9 @@ export const fovYDegrees = 45;
 export var modelBindGroupLayout: GPUBindGroupLayout;
 export var materialBindGroupLayout: GPUBindGroupLayout;
 
+export var canvasWidth: number;
+export var canvasHeight: number;
+
 // CHECKITOUT: this function initializes WebGPU and also creates some bind group layouts shared by all the renderers
 export async function initWebGPU() {
     canvas = document.getElementById("mainCanvas") as HTMLCanvasElement;
@@ -24,6 +27,9 @@ export async function initWebGPU() {
     canvas.height = canvas.clientHeight * devicePixelRatio;
 
     aspectRatio = canvas.width / canvas.height;
+
+    canvasWidth = canvas.width;
+    canvasHeight = canvas.height;
 
     if (!navigator.gpu)
     {
