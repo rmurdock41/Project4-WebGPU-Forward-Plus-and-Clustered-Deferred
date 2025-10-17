@@ -50,8 +50,21 @@ export const constants = {
 
 // =================================
 
-function evalShaderRaw(raw: string) {
-    return eval('`' + raw.replaceAll('${', '${constants.') + '`');
+function evalShaderRaw(raw: string): string {
+    return raw
+        .replace(/\$\{bindGroup_scene\}/g, String(constants.bindGroup_scene))
+        .replace(/\$\{bindGroup_model\}/g, String(constants.bindGroup_model))
+        .replace(/\$\{bindGroup_material\}/g, String(constants.bindGroup_material))
+        .replace(/\$\{moveLightsWorkgroupSize\}/g, String(constants.moveLightsWorkgroupSize))
+        .replace(/\$\{lightRadius\}/g, String(constants.lightRadius))
+        .replace(/\$\{clusterWidth\}/g, String(constants.clusterWidth))
+        .replace(/\$\{clusterHeight\}/g, String(constants.clusterHeight))
+        .replace(/\$\{clusterDepth\}/g, String(constants.clusterDepth))
+        .replace(/\$\{maxLightsPerCluster\}/g, String(constants.maxLightsPerCluster))
+        .replace(/\$\{bloomWorkgroupSize\}/g, String(constants.bloomWorkgroupSize))
+        .replace(/\$\{bloomThreshold\}/g, String(constants.bloomThreshold))
+        .replace(/\$\{canvasWidth\}/g, String(canvasWidth))
+        .replace(/\$\{canvasHeight\}/g, String(canvasHeight));
 }
 
 const commonSrc: string = evalShaderRaw(commonRaw);
