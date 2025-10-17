@@ -13,7 +13,7 @@ WebGL Forward+ and Clustered Deferred Shading
 
 ### Live Demo
 
-[![](img/thumb.png)](http://TODO.github.io/Project4-WebGPU-Forward-Plus-and-Clustered-Deferred)
+
 
 ### Demo Video/GIF
 
@@ -126,21 +126,15 @@ The data reveals that render bundle's performance impact is subtle and inconsist
 
 The inconsistent performance gains reflect the complexity of WebGPU rendering. In light-load scenarios, GPU processing is fast and frame time is primarily determined by GPU execution time, making CPU-side command encoding overhead relatively negligible, thus render bundle's pre-recording advantages cannot manifest. As light count increases and GPU workload grows, frame time lengthens, allowing the CPU more time for command encoding, making the difference between the two methods apparent. Overall, render bundles are an optimization technique suited for static geometry and high GPU load scenarios, with effectiveness depending on specific workload characteristics, providing 8-14% performance improvement in this test scene.
 
-
-
 ## Compute Shader Fullscreen Pass Implementation
 
 In the standard Clustered Deferred implementation, fullscreen lighting computation uses the traditional vertex + fragment shader pipeline: the vertex shader generates a screen-covering triangle, and the fragment shader reads from the G-buffer and performs lighting calculations for each pixel. As an additional implementation, this project replaces the fullscreen pass with a compute shader. The compute shader directly processes screen pixels with an 8×8 workgroup size, using `@builtin(global_invocation_id)` to determine which pixel coordinate each thread handles, reads geometry information from G-buffer textures, executes the same clustered lighting calculations as the fragment shader, and finally writes results to a storage texture via `textureStore()`.
 
 This implementation requires an **additional blit pass** because WebGPU's canvas format (bgra8unorm) does not support storage texture usage. Therefore, the compute shader first writes to an intermediate rgba8unorm texture, then copies the result to the canvas through a simple fullscreen render pass. The advantage of this architecture lies in the compute shader's more flexible execution model and easier integration of multi-pass post-processing, laying the foundation for implementing effects like Bloom.
 
-
-
 The performance difference between the two is typical small (within 1-2%). In testing, the compute shader version is slightly slower by approximately 2-3%, mainly attributed to the additional blit pass overhead requiring a complete render pass for format conversion. However, this difference is so minimal that results are inconsistent across multiple tests, sometimes even reversing.
 
 Furthermore, the primary purpose of implementing the compute shader version is not performance optimization, but rather to provide a more flexible architecture for subsequent post-processing effects such as Bloom. Compute shaders allow easier chaining of multiple compute passes and sharing of intermediate results, making complex post-processing pipelines more intuitive to implement. Therefore, this implementation is more of an architectural choice than a performance optimization, with its value lying in code extensibility and flexibility.
-
-
 
 ## Bloom Post-Processing Implementation
 
