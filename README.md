@@ -13,8 +13,6 @@ WebGL Forward+ and Clustered Deferred Shading
 
 ### Live Demo
 
-
-
 ### Demo Video/GIF
 
 ![](imgs/scene.gif)
@@ -22,6 +20,7 @@ WebGL Forward+ and Clustered Deferred Shading
 Camera control
 
 ![](imgs/scene2.gif)
+
 ## Performance Analysis
 
 All performance measurements were conducted at **1920×1080 resolution** using the Sponza Atrium scene. Frame times are reported in **milliseconds (ms)** - lower is better. **Test Configuration:** - Scene: Sponza Atrium (279 meshes, ~262k triangles) - Resolution: 1920×1080 - GPU: NVIDIA GeForce RTX 3060 Laptop - Browser: Chrome Canary 143.0.7473.0
@@ -38,6 +37,8 @@ All performance measurements were conducted at **1920×1080 resolution** using t
 
 ## Naive Forward Renderer
 
+![Performance Chart](imgs/s1.png)
+
 The Naive Forward Renderer serves as the baseline implementation for multi-light rendering in this project, providing a performance benchmark for subsequent optimization methods. This renderer employs the most straightforward forward rendering approach: for each screen pixel, it iterates through all lights in the scene and accumulates their lighting contributions. Following the standard graphics pipeline, the fragment shader processes the complete light list for every fragment, regardless of the light's distance or actual contribution to that fragment, resulting in significant computational redundancy.
 
 The algorithm exhibits O(fragments × lights) complexity, meaning rendering time scales linearly with the number of lights. The performance bottleneck stems from two primary factors: computational redundancy, where lights with limited influence ranges are still evaluated for every fragment, and memory access patterns, where each fragment must read the entire light buffer. When dealing with large numbers of lights, this creates substantial memory bandwidth pressure that becomes the dominant performance constraint.
@@ -45,6 +46,8 @@ The algorithm exhibits O(fragments × lights) complexity, meaning rendering time
 This renderer is suitable for simple scenes with limited light counts but impractical for modern rendering scenarios requiring numerous dynamic lights. Its primary value lies in establishing a performance baseline and demonstrating why spatial acceleration structures and intelligent light culling strategies are necessary, providing an important reference point for the subsequent Forward+ and Clustered Deferred implementations.
 
 ## Forward+ Renderer
+
+![Performance Chart](imgs/s2.png)
 
 Forward+ Renderer represents a significant improvement over the Naive Forward Renderer by introducing light clustering techniques that substantially reduce the number of lights each fragment must process. The core concept involves partitioning the view frustum into a three-dimensional grid and pre-computing which lights potentially affect each grid cell (cluster). During fragment shading, only the lights within the fragment's cluster are evaluated, reducing algorithmic complexity from O(fragments × lights) to O(fragments × average_lights_per_cluster).
 
@@ -55,6 +58,8 @@ The rendering phase's fragment shader first determines which cluster contains th
 The primary advantage of this method is more graceful performance scaling as light counts increase. In scenes with relatively uniform light distribution, each cluster contains only a small subset of lights on average, making rendering performance dependent more on scene complexity than total light count. However, the method has some limitations: it requires an additional compute pass for clustering that adds overhead, densely packed lights in certain regions can cause some clusters to contain many lights leading to performance degradation, and cluster count configuration requires balancing precision against memory usage, as too few clusters result in imprecise light assignment while too many increase memory overhead and clustering computation time.
 
 ## Clustered Deferred Renderer
+
+![Performance Chart](imgs/s3.png)
 
 Clustered Deferred Renderer combines the light clustering concept from Forward+ with deferred rendering techniques, further decoupling geometry processing from lighting computation. The core approach divides rendering into two independent stages: the first stage writes scene geometry information into a G-buffer, and the second stage performs lighting calculations via a fullscreen quad that reads from the G-buffer. This separation ensures that lighting complexity is no longer directly dependent on scene geometry complexity, making it particularly suitable for scenes with complex materials and significant geometry overlap.
 
