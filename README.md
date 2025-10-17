@@ -19,6 +19,9 @@ WebGL Forward+ and Clustered Deferred Shading
 
 ![](imgs/scene.gif)
 
+Camera control
+
+![](imgs/scene2.gif)
 ## Performance Analysis
 
 All performance measurements were conducted at **1920×1080 resolution** using the Sponza Atrium scene. Frame times are reported in **milliseconds (ms)** - lower is better. **Test Configuration:** - Scene: Sponza Atrium (279 meshes, ~262k triangles) - Resolution: 1920×1080 - GPU: NVIDIA GeForce RTX 3060 Laptop - Browser: Chrome Canary 143.0.7473.0
