@@ -7,7 +7,7 @@ WebGL Forward+ and Clustered Deferred Shading
   
   [LinkedIn](https://www.linkedin.com/in/muqiao-lei-633304242/) · [GitHub](https://github.com/rmurdock41)
 
-- Tested on: (TODO) Google Chrome Canary 143.0.7473.0
+- Tested on: Google Chrome Canary 143.0.7473.0
   
    Windows 10, 11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz 2.30 GHz, NVIDIA GeForce RTX 3060 Laptop GPU (Personal Computer)
 
