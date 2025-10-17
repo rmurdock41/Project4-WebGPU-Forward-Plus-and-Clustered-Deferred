@@ -16,7 +16,10 @@ import clusteredDeferredFullscreenFragRaw from './clustered_deferred_fullscreen.
 import moveLightsComputeRaw from './move_lights.cs.wgsl?raw';
 import clusteringComputeRaw from './clustering.cs.wgsl?raw';
 
-import { canvasWidth, canvasHeight } from '../renderer'; 
+import bloomComputeRaw from './bloom.cs.wgsl?raw';
+import { canvasWidth, canvasHeight } from '../renderer';
+import clusteredDeferredFullscreenComputeRaw from './clustered_deferred_fullscreen.cs.wgsl?raw';
+import blitRaw from './blit.wgsl?raw';
 
 // CONSTANTS (for use in shaders)
 // =================================
@@ -34,11 +37,12 @@ export const constants = {
 
     lightRadius: 2,
 
-    clusterWidth: 16,    
-    clusterHeight: 9,    
-    clusterDepth: 128,   
+    clusterWidth: 16,
+    clusterHeight: 9,
+    clusterDepth: 128,
     maxLightsPerCluster: 1024,
-
+    bloomWorkgroupSize: 16,
+    bloomThreshold: 0.12,
     get canvasWidth() { return canvasWidth; },
     get canvasHeight() { return canvasHeight; }
 
@@ -67,3 +71,7 @@ export const clusteredDeferredFullscreenFragSrc: string = processShaderRaw(clust
 
 export const moveLightsComputeSrc: string = processShaderRaw(moveLightsComputeRaw);
 export const clusteringComputeSrc: string = processShaderRaw(clusteringComputeRaw);
+
+export const bloomComputeSrc: string = processShaderRaw(bloomComputeRaw);
+export const clusteredDeferredFullscreenComputeSrc: string = processShaderRaw(clusteredDeferredFullscreenComputeRaw);
+export const blitSrc: string = processShaderRaw(blitRaw);

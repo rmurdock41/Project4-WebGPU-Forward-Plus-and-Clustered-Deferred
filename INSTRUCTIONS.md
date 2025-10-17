@@ -16,6 +16,7 @@ In this project, you will implement the Forward+ and Clustered Deferred shading 
 ## Running the code
 
 Follow these steps to install and view the project:
+
 - Clone this repository
 - Download and install [Node.js](https://nodejs.org/en/)
 - Run `npm install` in the root directory of this project to download and install dependencies
@@ -43,6 +44,7 @@ Follow these steps to install and view the project:
 ### GitHub Pages setup (5 points)
 
 Since this project uses WebGPU, it is easy to deploy it on the web for anyone to see. To set this up, do the following:
+
 - Go to your repository's settings
 - Go to the "Pages" tab
 - Under "Build and Deployment", set "Source" to "GitHub Actions"
@@ -56,6 +58,7 @@ Once you've done those steps, any new commit to the `main` branch should automat
 **Ask on Ed Discussion for any clarifications.**
 
 In this project, you are given code for:
+
 - glTF scene loading
 - Camera control
 - Light movement compute shader
@@ -67,22 +70,25 @@ For editing the project, you will want to use [Visual Studio Code](https://code.
 
 WebGPU errors will appear in your browser's developer console (Ctrl + Shift + J for Chrome on Windows). Unlike some other graphics APIs, WebGPU error messages are often very helpful, especially if you've labeled your various pipeline components with meaningful names. Be sure to check the console whenever something isn't working correctly.
 
-### Part 1: Implement the different rendering methods 
+### Part 1: Implement the different rendering methods
 
 To start off, the naive renderer is missing a camera view projection matrix buffer, and your job is to fill in the missing parts. This will expose you to various parts of the codebase and will hopefully help you understand the general layout of the WebGPU rendering pipeline.
 
 #### 1) Naive (20 points)
 
 1.1) Create and write to the buffer
+
 - You first need to create the buffer in `camera.ts` and write the view projection matrix to it
 - Then, you need to upload the buffer to the GPU
 - Look for comments containing `TODO-1.1` for details
 
 1.2) Use the buffer in a bind group and a render pass
+
 - You then need to use the buffer in the naive renderer's layouts and pipeline
 - Look for comments containing `TODO-1.2` for details
 
 1.3) Update the shaders accordingly
+
 - Lastly, you need to update the naive renderer shaders to actually use the new buffer
 - Look for comments containing `TODO-1.3` for details
 
@@ -90,18 +96,18 @@ Then, based on the discussions in lecture and recitation, you are expected to im
 
 #### 2) Forward+ (50 points)
 
-  - Build a data structure to keep track of how many lights are in each cluster and what their indices are
-  - Render each fragment using only the lights that overlap its cluster
-  - Look for comments containing `TODO-2` for details
+- Build a data structure to keep track of how many lights are in each cluster and what their indices are
+- Render each fragment using only the lights that overlap its cluster
+- Look for comments containing `TODO-2` for details
 
 When adding new buffers, especially if they contain new structs, their alignment might be different than what you expect. Be sure to check your structs' alignment using [this online calculator](https://webgpufundamentals.org/webgpu/lessons/resources/wgsl-offset-computer.html#) and match the memory layout on the host.
 
 #### 3) Clustered Deferred (15 points)
 
-  - Reuse the clustering logic from Forward+
-  - Store vertex attributes in a G-buffer
-  - Read from the G-buffer in a separate fullscreen pass to produce final output
-  - Look for comments containing `TODO-3` for details
+- Reuse the clustering logic from Forward+
+- Store vertex attributes in a G-buffer
+- Read from the G-buffer in a separate fullscreen pass to produce final output
+- Look for comments containing `TODO-3` for details
 
 ### Part 2: Extra Credit: Effects and Optimizations
 
@@ -110,6 +116,7 @@ For full credit, you must show a good optimization effort and record the perform
 #### Extra Credit: Post Processing (5 points)
 
 Implement one of the following post-processing effects:
+
 - Bloom using post-process blur (box or Gaussian)
 - Toon shading (with ramp shading + simple depth-edge detection for outlines)
 
@@ -137,10 +144,10 @@ Here are some ideas to get you started:
 For devices with limited GPU bandwidth, we can try to further reduce the memory footprint of the geometry pass. This can be done by using a single channel `u32` buffer for shading. Here are some hints to do that:
 
 1. Rewrite the current G-buffer code to output ObjectID and TriangleID; the format can be something like (`(ObjectID << offset) + TriangleID`)
-1. In the shading stage, bind the triangles index buffer and vertex buffer as two storage buffers and load vertex attributes according to ObjectID and TriangleID
-1. Use the current pixel's position and depth to reconstruct its world position, then calculate the barycentric coordinates using the world positions of the current pixel and the three triangle vertices
-1. Interpolate vertex attributes
-1. Perform shading according to ObjectID (you don't need to do mipmapping when sampling texture here to receive full credits)
+2. In the shading stage, bind the triangles index buffer and vertex buffer as two storage buffers and load vertex attributes according to ObjectID and TriangleID
+3. Use the current pixel's position and depth to reconstruct its world position, then calculate the barycentric coordinates using the world positions of the current pixel and the three triangle vertices
+4. Interpolate vertex attributes
+5. Perform shading according to ObjectID (you don't need to do mipmapping when sampling texture here to receive full credits)
 
 Note that if you want to implement this in addition to the G-buffer optimizations, in order to receive full credit for both, you will need some method of switching between the two pipelines.
 
@@ -156,6 +163,7 @@ Use [render bundles](https://toji.dev/webgpu-best-practices/render-bundles.html)
 ## Performance Analysis (10 points)
 
 Compare your implementations of Forward+ and Clustered Deferred shading and analyze their differences.
+
 - Is one of them faster?
 - Is one of them better at certain types of workloads?
 - What are the benefits and tradeoffs of using one over the other?
@@ -166,22 +174,24 @@ Optimize your TypeScript and/or WGSL code. Chrome's profiling tools are useful f
 If your Forward+ or Clustered Deferred renderer is running much slower than expected, make sure you are not making copies of large structs/arrays in shader code. You can use [pointers](https://google.github.io/tour-of-wgsl/types/pointers/using/) in WGSL to avoid this issue.
 
 For each new effect feature (required or extra), please provide the following analysis:
-  - Concise overview and explanation of the feature.
-  - Performance change due to adding the feature.
-  - If applicable, how do parameters (such as number of lights, number of tiles, etc.) affect performance? Show data with graphs.
-    - Show timing in milliseconds, not FPS.
-  - If you did something to accelerate the feature, what did you do and why?
-  - How might this feature be optimized beyond your current implementation?
+
+- Concise overview and explanation of the feature.
+- Performance change due to adding the feature.
+- If applicable, how do parameters (such as number of lights, number of tiles, etc.) affect performance? Show data with graphs.
+  - Show timing in milliseconds, not FPS.
+- If you did something to accelerate the feature, what did you do and why?
+- How might this feature be optimized beyond your current implementation?
 
 For each performance feature (required or extra), please provide:
-  - Concise overview and explanation of the feature.
-  - Detailed performance improvement analysis of adding the feature.
-    - What is the best case scenario for your performance improvement? What is the worst? Explain briefly.
-    - Are there tradeoffs to this performance feature? Explain briefly.
-    - How do parameters (such as number of lights, number of tiles, etc.) affect performance? Show data with graphs.
-      - Show timing in milliseconds, not FPS.
-    - Show debug views when possible.
-      - If the debug view correlates with performance, explain how.
+
+- Concise overview and explanation of the feature.
+- Detailed performance improvement analysis of adding the feature.
+  - What is the best case scenario for your performance improvement? What is the worst? Explain briefly.
+  - Are there tradeoffs to this performance feature? Explain briefly.
+  - How do parameters (such as number of lights, number of tiles, etc.) affect performance? Show data with graphs.
+    - Show timing in milliseconds, not FPS.
+  - Show debug views when possible.
+    - If the debug view correlates with performance, explain how.
 
 ## Base Code Walkthrough
 
@@ -203,6 +213,7 @@ In general, you can search for comments containing "CHECKITOUT" to see the most 
 ## README
 
 Replace the contents of `README.md` with the following:
+
 - A brief description of your project and the specific features you implemented
 - At least one screenshot of your project running
 - A 30+ second video/gif of your project running showing all features (even though your demo can be seen online, it may not run on all computers, while a video will work everywhere)

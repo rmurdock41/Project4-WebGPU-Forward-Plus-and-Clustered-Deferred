@@ -3,8 +3,9 @@
     "",
     "\\src",
     "\\src\\renderers",
-    "\\src\\shaders"
+    "\\src\\shaders",
+    "\\src\\stage"
   ],
-  "SelectedNode": "\\src\\shaders\\shaders.ts",
+  "SelectedNode": "\\src\\shaders\\move_lights.cs.wgsl",
   "PreviewInSolutionExplorer": false
 }
